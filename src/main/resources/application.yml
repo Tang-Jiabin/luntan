@@ -1,0 +1,28 @@
+server:
+  port: 8080
+swagger:
+  enable: true
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 3
+      max-lifetime: 30000
+      maximum-pool-size: 10
+      connection-test-query: SELECT 1
+    name: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://49.233.127.220:3306/luntan?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true
+    username: root
+    password: Mysql@Test01
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+wechat:
+  appid: wx3df1184a30ab95ed
+  secret: f307a802d3e5d3a10c62e3a933b81ade
+file.dir: http://localhost:8080/upload/
