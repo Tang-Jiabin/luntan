@@ -3,12 +3,9 @@ package com.example.luntan.vo;
 import lombok.Data;
 
 @Data
-public class ForumQueryVO {
-
-    private String title;
-    private Integer lx;
+public class PlQueryVO {
     private Integer page;
     private Integer limit;
-    private Integer uid;
+    private Integer fid;
     private Integer loginId;
 }

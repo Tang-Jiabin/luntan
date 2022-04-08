@@ -13,4 +13,6 @@ public interface UserService {
     UserDTO update(UserDTO userDTO);
 
     List<UserDTO> findAllByIdList(List<Integer> uidList);
+
+    UserDTO findById(Integer uid);
 }

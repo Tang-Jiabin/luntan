@@ -1,7 +1,5 @@
 package com.example.luntan.vo;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data

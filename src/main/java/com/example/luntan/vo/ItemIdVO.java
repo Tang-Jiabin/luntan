@@ -8,4 +8,5 @@ public class ItemIdVO {
     private Integer id;
 
     private Integer uid;
+
 }

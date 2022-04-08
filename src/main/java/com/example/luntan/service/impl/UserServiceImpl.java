@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         userOptional.ifPresent(user -> {
             BeanUtils.copyProperties(userDTO, user);
             User save = userRepository.save(user);
-            BeanUtils.copyProperties(user, userDTO);
+            BeanUtils.copyProperties(save, userDTO);
         });
         return userDTO;
     }
@@ -64,5 +64,13 @@ public class UserServiceImpl implements UserService {
             userDTOList.add(userDTO);
         }
         return userDTOList;
+    }
+
+    @Override
+    public UserDTO findById(Integer uid) {
+        UserDTO userDTO = new UserDTO();
+        Optional<User> userOptional = userRepository.findById(uid);
+        userOptional.ifPresent(user -> BeanUtils.copyProperties(user, userDTO));
+        return userDTO;
     }
 }

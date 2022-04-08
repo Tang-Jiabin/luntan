@@ -1,6 +1,8 @@
 package com.example.luntan.service.impl;
 
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import com.example.luntan.common.APIException;
 import com.example.luntan.dao.DzRepository;
 import com.example.luntan.dao.ForumRepository;
 import com.example.luntan.dao.ScRepository;
@@ -53,7 +55,7 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public PageVO<ForumVO> findPage(ForumQueryVO forumQueryVO) {
+    public Page<Forum> findPage(ForumQueryVO forumQueryVO) {
 
         int page = forumQueryVO.getPage() <= 1 ? 0 : forumQueryVO.getPage() - 1;
         Pageable pageable = null;
@@ -66,7 +68,7 @@ public class ForumServiceImpl implements ForumService {
                 break;
             case 2:
                 //最新 按照发布时间排序
-
+                forumQueryVO.setLx(null);
                 pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "ctime");
                 break;
             case 3:
@@ -76,20 +78,19 @@ public class ForumServiceImpl implements ForumService {
                 break;
             default:
                 //分类 按照更新时间排序
-
                 pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "utime");
                 break;
         }
 
 
-        Page<Forum> forumPage = forumRepository.findAll((root, query, criteriaBuilder) -> {
+        return forumRepository.findAll((root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
 
             if (StringUtils.hasText(forumQueryVO.getTitle())) {
                 list.add(criteriaBuilder.like(root.get("content").as(String.class), "%" + forumQueryVO.getTitle() + "%"));
             }
 
-            if (forumQueryVO.getUid() != null) {
+            if (forumQueryVO.getUid() != null && forumQueryVO.getUid() != 0) {
                 list.add(criteriaBuilder.equal(root.get("uid").as(Integer.class), forumQueryVO.getUid()));
             }
 
@@ -100,18 +101,6 @@ public class ForumServiceImpl implements ForumService {
             Predicate[] p = new Predicate[list.size()];
             return criteriaBuilder.and(list.toArray(p));
         }, pageable);
-
-        List<Integer> uidList = forumPage.get().map(Forum::getUid).collect(Collectors.toList());
-        PageVO<ForumVO> pageVO = new PageVO<ForumVO>();
-        BeanUtils.copyProperties(forumPage, pageVO);
-        List<Forum> forumContent = forumPage.getContent();
-        List<ForumVO> content = forumList2VO(forumContent);
-        content = addUserInfo(content, uidList);
-        content = addDzStatus(content, forumQueryVO.getUid());
-        content = addScStatus(content, forumQueryVO.getUid());
-        pageVO.setContent(content);
-
-        return pageVO;
     }
 
     @Override
@@ -123,7 +112,8 @@ public class ForumServiceImpl implements ForumService {
             forumOptional.ifPresent(forum -> {
                 forum.setScmun(forum.getScmun() - 1);
                 forumRepository.save(forum);
-            });}, () -> {
+            });
+        }, () -> {
             Sc sc = new Sc();
             sc.setUid(uid);
             sc.setFid(id);
@@ -158,51 +148,82 @@ public class ForumServiceImpl implements ForumService {
         });
     }
 
-    private List<ForumVO> forumList2VO(List<Forum> forumContent) {
-        List<ForumVO> forumVOList = new ArrayList<>();
-        for (Forum forum : forumContent) {
-            ForumVO forumVO = new ForumVO();
-            BeanUtils.copyProperties(forum, forumVO);
-            forumVOList.add(forumVO);
-        }
-        return forumVOList;
-    }
-
-    public List<ForumVO> addDzStatus(List<ForumVO> forumVOList, Integer uid) {
-        List<Integer> fidList = dzRepository.findAllByUid(uid).stream().map(Dz::getFid).collect(Collectors.toList());
-        forumVOList.forEach(forumVO -> {
-            forumVO.setDz(0);
-            if (fidList.contains(forumVO.getId())) {
-                forumVO.setDz(1);
-            }
+    @Override
+    public ForumDTO findById(Integer id) {
+        ForumDTO forumDTO = new ForumDTO();
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        forumOptional.ifPresentOrElse(forum -> BeanUtils.copyProperties(forum, forumDTO), () -> {
+            throw new APIException(404, "帖子不存在");
         });
-        return forumVOList;
+        return forumDTO;
     }
 
-    public List<ForumVO> addScStatus(List<ForumVO> forumVOList, Integer uid) {
-        List<Integer> fidList = scRepository.findAllByUid(uid).stream().map(Sc::getFid).collect(Collectors.toList());
-        forumVOList.forEach(forumVO -> {
-            forumVO.setSc(0);
-            if (fidList.contains(forumVO.getId())) {
-                forumVO.setSc(1);
-            }
-        });
-        return forumVOList;
+    @Override
+    public ForumVO dto2vo(ForumDTO forumDTO, UserDTO userDTO, Integer loginId) {
+        ForumVO forumVO = new ForumVO();
+        BeanUtils.copyProperties(forumDTO, forumVO);
+        forumVO.setLogo(userDTO.getLogo());
+        forumVO.setUname(userDTO.getName());
+        addDzInfo(forumVO, loginId);
+        addScInfo(forumVO, loginId);
+        return forumVO;
     }
 
-    public List<ForumVO> addUserInfo(List<ForumVO> forumList, List<Integer> uidList) {
+    @Override
+    public PageVO<ForumVO> page2VO(Page<Forum> page) {
+        PageVO<ForumVO> pageVO = new PageVO<ForumVO>();
+        BeanUtils.copyProperties(page, pageVO);
+        return pageVO;
+    }
 
-        List<UserDTO> userList = userService.findAllByIdList(uidList);
+    @Override
+    public List<ForumVO> forumList2VO(List<Forum> forumList, List<UserDTO> userDTOList, Integer loginId) {
         List<ForumVO> forumVOList = new ArrayList<>();
-        for (ForumVO forumVO : forumList) {
-            for (UserDTO userDTO : userList) {
-                if (userDTO.getId().equals(forumVO.getUid())) {
-                    forumVO.setUname(userDTO.getName());
-                    forumVO.setLogo(userDTO.getLogo());
+        for (Forum forum : forumList) {
+            ForumDTO forumDTO = po2dto(forum);
+            for (UserDTO userDTO : userDTOList) {
+                if (forum.getUid().equals(userDTO.getId())) {
+                    ForumVO forumVO = dto2vo(forumDTO, userDTO, loginId);
                     forumVOList.add(forumVO);
                 }
             }
         }
         return forumVOList;
     }
+
+    private void addScInfo(ForumVO forumVO, Integer loginId) {
+        forumVO.setSc(0);
+        if (loginId != null) {
+            Optional<Sc> scOptional = scRepository.findByUidAndFid(loginId, forumVO.getId());
+            scOptional.ifPresent(sc -> {
+                forumVO.setSc(1);
+            });
+        }
+    }
+
+    private void addDzInfo(ForumVO forumVO, Integer loginId) {
+        forumVO.setDz(0);
+        if (loginId != null) {
+            Optional<Dz> dzOptional = dzRepository.findByUidAndFid(loginId, forumVO.getId());
+            dzOptional.ifPresent(dz -> {
+                forumVO.setDz(1);
+            });
+        }
+    }
+
+    private ForumDTO po2dto(Forum forum) {
+        ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setCtime(forum.getCtime());
+        forumDTO.setId(forum.getId());
+        forumDTO.setUid(forum.getUid());
+        forumDTO.setLabelsid(forum.getLabelsid());
+        forumDTO.setUtime(forum.getUtime());
+        forumDTO.setContent(forum.getContent());
+        forumDTO.setPicture(forum.getPicture());
+        forumDTO.setDzmun(forum.getDzmun());
+        forumDTO.setPlmun(forum.getPlmun());
+        forumDTO.setScmun(forum.getScmun());
+        return forumDTO;
+    }
+
 }
