@@ -9,6 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +52,17 @@ public class UserServiceImpl implements UserService {
             BeanUtils.copyProperties(user, userDTO);
         });
         return userDTO;
+    }
+
+    @Override
+    public List<UserDTO> findAllByIdList(List<Integer> uidList) {
+        List<UserDTO> userDTOList = new ArrayList<>();
+        List<User> allById = userRepository.findAllById(uidList);
+        for (User user : allById) {
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(user, userDTO);
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
     }
 }

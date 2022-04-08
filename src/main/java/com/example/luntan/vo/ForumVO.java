@@ -1,10 +1,14 @@
 package com.example.luntan.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
 public class ForumVO {
     private Integer id;
+    private Integer uid;
+    private Integer labelsid;
     private String logo;
     private String uname;
     private String ctime;

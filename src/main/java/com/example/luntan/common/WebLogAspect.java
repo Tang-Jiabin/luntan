@@ -74,7 +74,12 @@ public class WebLogAspect {
         // 打印请求的 IP
         log.info("IP             : {}", ip);
         // 打印请求入参
-        log.info("Request Args   : {}", JSONObject.toJSONString(joinPoint.getArgs()));
+        try {
+            log.info("Request Args   : {}", JSONObject.toJSONString(joinPoint.getArgs()));
+        }catch (Exception e){
+            log.info("Request Args   : {}", "{}");
+        }
+
         IP = ip;
     }
 

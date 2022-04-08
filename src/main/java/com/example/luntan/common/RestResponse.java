@@ -2,6 +2,7 @@ package com.example.luntan.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +10,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
 @ApiModel(value = "RestResponse<T>", description = "响应通用参数包装")
 public class RestResponse<T> {
 

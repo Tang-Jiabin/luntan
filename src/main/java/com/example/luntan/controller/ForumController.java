@@ -1,14 +1,14 @@
 package com.example.luntan.controller;
 
 import com.example.luntan.common.RestResponse;
-import com.example.luntan.vo.ForumQueryVO;
-import com.example.luntan.vo.ItemIdVO;
-import com.example.luntan.vo.PlAddVO;
-import com.example.luntan.vo.ForumVO;
-import com.example.luntan.vo.UserForumVO;
+import com.example.luntan.dto.ForumDTO;
+import com.example.luntan.service.ForumService;
+import com.example.luntan.vo.*;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,33 +23,25 @@ import java.util.List;
 public class ForumController {
 
 
+    private final ForumService forumService;
+
+    public ForumController(ForumService forumService) {
+        this.forumService = forumService;
+    }
+
     @ApiOperation("帖子列表")
     @ApiImplicitParam(name = "ForumQueryDTO", value = "查询信息", required = true, dataTypeClass = ForumQueryVO.class, paramType = "body")
     @PostMapping(value = "/list")
-    public RestResponse<List<ForumVO>> register(@RequestBody ForumQueryVO forumQueryVO) {
-
-        List<ForumVO> list = new ArrayList();
-        ForumVO forumVO = new ForumVO();
-        forumVO.setId(1);
-        forumVO.setLogo("https://img-blog.csdn.net/20180611163559620");
-        forumVO.setUname("用户名");
-        forumVO.setCtime("2022-1-1");
-        forumVO.setContent("帖子内容");
-        forumVO.setPicture("https://img-blog.csdn.net/20180611163559620,https://img-blog.csdn.net/20180611163559620");
-        forumVO.setDz(1);
-        forumVO.setDzmun(12);
-        forumVO.setPlmun(2);
-        forumVO.setSc(1);
-        list.add(forumVO);
-
-        return RestResponse.success(list);
+    public RestResponse<PageVO<ForumVO>> list(@RequestBody ForumQueryVO forumQueryVO) {
+        PageVO<ForumVO> page = forumService.findPage(forumQueryVO);
+        return RestResponse.success(page);
     }
 
     @ApiOperation("点赞")
     @ApiImplicitParam(name = "ItemIdDTO", value = "点赞", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/dz")
     public RestResponse dz(@RequestBody ItemIdVO itemIdVO) {
-
+        forumService.dz(itemIdVO.getUid(),itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -57,8 +49,7 @@ public class ForumController {
     @ApiImplicitParam(name = "ItemIdDTO", value = "取消点赞", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/dzdel")
     public RestResponse dzdel(@RequestBody ItemIdVO itemIdVO) {
-
-
+        forumService.dz(itemIdVO.getUid(),itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -66,8 +57,7 @@ public class ForumController {
     @ApiImplicitParam(name = "ItemIdDTO", value = "收藏", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/sc")
     public RestResponse sc(@RequestBody ItemIdVO itemIdVO) {
-
-
+        forumService.sc(itemIdVO.getUid(),itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -75,8 +65,7 @@ public class ForumController {
     @ApiImplicitParam(name = "ItemIdDTO", value = "取消收藏", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/scdel")
     public RestResponse scdel(@RequestBody ItemIdVO itemIdVO) {
-
-
+        forumService.sc(itemIdVO.getUid(),itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -129,19 +118,15 @@ public class ForumController {
         return RestResponse.success();
     }
 
-//    userdata
 
     @ApiOperation("用户数据")
     @ApiImplicitParam(name = "ItemIdDTO", value = "添加评论", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/userdata")
     public RestResponse<UserForumVO> userdata(@RequestBody ItemIdVO itemIdVO) {
-
         UserForumVO userForumVO = new UserForumVO();
         userForumVO.setTiezi(1);
         userForumVO.setPl(2);
         userForumVO.setDz(3);
-
-
         return RestResponse.success(userForumVO);
     }
 
@@ -150,8 +135,9 @@ public class ForumController {
     @ApiImplicitParam(name = "ItemIdDTO", value = "添加评论", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/add")
     public RestResponse<UserForumVO> add(@RequestBody ForumVO forumVO) {
-
-
+        ForumDTO forumDTO = new ForumDTO();
+        BeanUtils.copyProperties(forumVO,forumDTO);
+        forumService.add(forumDTO);
         return RestResponse.success();
     }
 
