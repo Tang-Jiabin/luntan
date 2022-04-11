@@ -5,18 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "l_sc")
+@Table(name = "luntan_jl")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Sc {
+public class Jl {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private Integer fid;
+
     private Integer uid;
 
-    private Integer fid;
+    private Instant ctime;
 }

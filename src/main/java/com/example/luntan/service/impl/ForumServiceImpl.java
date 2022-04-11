@@ -1,21 +1,18 @@
 package com.example.luntan.service.impl;
 
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.example.luntan.common.APIException;
-import com.example.luntan.dao.DzRepository;
-import com.example.luntan.dao.ForumRepository;
-import com.example.luntan.dao.ScRepository;
+import com.example.luntan.dao.*;
 import com.example.luntan.dto.ForumDTO;
 import com.example.luntan.dto.UserDTO;
 import com.example.luntan.pojo.Dz;
 import com.example.luntan.pojo.Forum;
+import com.example.luntan.pojo.Jl;
 import com.example.luntan.pojo.Sc;
 import com.example.luntan.service.ForumService;
-import com.example.luntan.service.UserService;
-import com.example.luntan.vo.ForumQueryVO;
-import com.example.luntan.vo.ForumVO;
-import com.example.luntan.vo.PageVO;
+import com.example.luntan.vo.*;
+import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,27 +21,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.data.domain.Page;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class ForumServiceImpl implements ForumService {
 
-    private final ForumRepository forumRepository;
-    private final UserService userService;
+
     private final DzRepository dzRepository;
     private final ScRepository scRepository;
+    private final PlRepository plRepository;
+    private final JlRepository jlRepository;
+    private final ForumRepository forumRepository;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, DzRepository dzRepository, ScRepository scRepository) {
-        this.forumRepository = forumRepository;
-        this.userService = userService;
-        this.dzRepository = dzRepository;
-        this.scRepository = scRepository;
-    }
 
     @Override
     public void add(ForumDTO forumDTO) {
@@ -60,7 +54,7 @@ public class ForumServiceImpl implements ForumService {
         int page = forumQueryVO.getPage() <= 1 ? 0 : forumQueryVO.getPage() - 1;
         Pageable pageable = null;
 
-        switch (forumQueryVO.getLx()) {
+        switch (forumQueryVO.getLx() == null ? 1 : forumQueryVO.getLx()) {
             case 1:
                 //TODO 推荐 按照推荐算法排序
                 forumQueryVO.setLx(null);
@@ -82,7 +76,11 @@ public class ForumServiceImpl implements ForumService {
                 break;
         }
 
+        return findPageAndSort(forumQueryVO, pageable);
+    }
 
+    @NotNull
+    private Page<Forum> findPageAndSort(ForumQueryVO forumQueryVO, Pageable pageable) {
         return forumRepository.findAll((root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
 
@@ -96,6 +94,12 @@ public class ForumServiceImpl implements ForumService {
 
             if (forumQueryVO.getLx() != null) {
                 list.add(criteriaBuilder.equal(root.get("labelsid").as(Integer.class), forumQueryVO.getLx()));
+            }
+
+            if (forumQueryVO.getIds() != null) {
+                CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get("id"));
+                forumQueryVO.getIds().forEach(in::value);
+                list.add(in);
             }
 
             Predicate[] p = new Predicate[list.size()];
@@ -139,12 +143,12 @@ public class ForumServiceImpl implements ForumService {
             Dz dz = new Dz();
             dz.setUid(uid);
             dz.setFid(id);
-            dzRepository.save(dz);
-
             forumOptional.ifPresent(forum -> {
+                dz.setFUid(forum.getUid());
                 forum.setDzmun(forum.getDzmun() + 1);
                 forumRepository.save(forum);
             });
+            dzRepository.save(dz);
         });
     }
 
@@ -189,6 +193,41 @@ public class ForumServiceImpl implements ForumService {
             }
         }
         return forumVOList;
+    }
+
+    @Override
+    public UserForumVO findUserDataStatistics(Integer uid) {
+        UserForumVO userForumVO = new UserForumVO();
+        Integer tiezi = forumRepository.findCountByUid(uid);
+        Integer dz = dzRepository.findCountByFUid(uid);
+        Integer pl = plRepository.findCountByUid(uid);
+        userForumVO.setTiezi(tiezi);
+        userForumVO.setDz(dz);
+        userForumVO.setPl(pl);
+        return userForumVO;
+    }
+
+    @Override
+    public List<Sc> findScList(Integer uid) {
+        return scRepository.findAllByUid(uid);
+    }
+
+    @Override
+    public void addJl(ItemIdVO itemIdVO) {
+        if (itemIdVO.getUid() != null && itemIdVO.getId() != null) {
+            Optional<Jl> jlOptional = jlRepository.findByFidAndUid(itemIdVO.getId(), itemIdVO.getUid());
+            jlOptional.ifPresent(jlRepository::delete);
+            Jl jl = new Jl();
+            jl.setFid(itemIdVO.getId());
+            jl.setUid(itemIdVO.getUid());
+            jl.setCtime(Instant.now());
+            jlRepository.save(jl);
+        }
+    }
+
+    @Override
+    public List<Jl> findJlList(Integer loginId) {
+        return jlRepository.findAllByUid(loginId);
     }
 
     private void addScInfo(ForumVO forumVO, Integer loginId) {

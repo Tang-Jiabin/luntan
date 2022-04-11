@@ -9,6 +9,8 @@ public class UserVO {
 
     private String name;
 
+    private String sign;
+
     private String logo;
 
     private Integer sex;

@@ -3,9 +3,9 @@ package com.example.luntan.service;
 import com.example.luntan.dto.ForumDTO;
 import com.example.luntan.dto.UserDTO;
 import com.example.luntan.pojo.Forum;
-import com.example.luntan.vo.ForumQueryVO;
-import com.example.luntan.vo.ForumVO;
-import com.example.luntan.vo.PageVO;
+import com.example.luntan.pojo.Jl;
+import com.example.luntan.pojo.Sc;
+import com.example.luntan.vo.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -27,4 +27,12 @@ public interface ForumService {
     PageVO<ForumVO> page2VO(Page<Forum> page);
 
     List<ForumVO> forumList2VO(List<Forum> content, List<UserDTO> userDTOList, Integer loginId);
+
+    UserForumVO findUserDataStatistics(Integer uid);
+
+    List<Sc> findScList(Integer uid);
+
+    void addJl(ItemIdVO itemIdVO);
+
+    List<Jl> findJlList(Integer loginId);
 }

@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             BeanUtils.copyProperties(userDTO, user);
             user.setCtime(Instant.now());
+            user.setSign("暂无签名");
             User save = userRepository.save(user);
             userDTO.setId(save.getId());
         }

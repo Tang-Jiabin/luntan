@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class UserForumVO {
 
-    private Integer tiezi;
+    private Integer tiezi = 0;
 
-    private Integer pl;
+    private Integer pl = 0;
 
-    private Integer dz;
+    private Integer dz = 0;
 }

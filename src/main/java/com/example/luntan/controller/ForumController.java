@@ -4,14 +4,18 @@ import com.example.luntan.common.RestResponse;
 import com.example.luntan.dto.ForumDTO;
 import com.example.luntan.dto.UserDTO;
 import com.example.luntan.pojo.Forum;
+import com.example.luntan.pojo.Jl;
 import com.example.luntan.pojo.Pl;
+import com.example.luntan.pojo.Sc;
 import com.example.luntan.service.ForumService;
 import com.example.luntan.service.PlService;
 import com.example.luntan.service.UserService;
 import com.example.luntan.vo.*;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
@@ -20,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,13 +48,43 @@ public class ForumController {
     @ApiImplicitParam(name = "ForumQueryDTO", value = "帖子列表", required = true, dataTypeClass = ForumQueryVO.class, paramType = "body")
     @PostMapping(value = "/list")
     public RestResponse<PageVO<ForumVO>> list(@RequestBody ForumQueryVO forumQueryVO) {
+        PageVO<ForumVO> pageVO = getForumPageVO(forumQueryVO);
+        return RestResponse.success(pageVO);
+    }
+
+
+    @ApiOperation("收藏列表")
+    @ApiImplicitParam(name = "ForumQueryDTO", value = "收藏列表", required = true, dataTypeClass = ForumQueryVO.class, paramType = "body")
+    @PostMapping(value = "/sclist")
+    public RestResponse<PageVO<ForumVO>> sclist(@RequestBody ForumQueryVO forumQueryVO) {
+        List<Sc> scList = forumService.findScList(forumQueryVO.getLoginId());
+        scList.add(new Sc(0, 0, 0));
+        forumQueryVO.setIds(scList.stream().map(Sc::getFid).collect(Collectors.toList()));
+        PageVO<ForumVO> pageVO = getForumPageVO(forumQueryVO);
+        return RestResponse.success(pageVO);
+    }
+
+    @ApiOperation("历史列表")
+    @ApiImplicitParam(name = "ForumQueryDTO", value = "历史列表", required = true, dataTypeClass = ForumQueryVO.class, paramType = "body")
+    @PostMapping(value = "/jllist")
+    public RestResponse<PageVO<ForumVO>> jllist(@RequestBody ForumQueryVO forumQueryVO) {
+        List<Jl> scList = forumService.findJlList(forumQueryVO.getLoginId());
+        scList.add(new Jl(0, 0, 0, Instant.now()));
+        forumQueryVO.setIds(scList.stream().map(Jl::getFid).collect(Collectors.toList()));
+        PageVO<ForumVO> pageVO = getForumPageVO(forumQueryVO);
+        return RestResponse.success(pageVO);
+    }
+
+    @NotNull
+    private PageVO<ForumVO> getForumPageVO(ForumQueryVO forumQueryVO) {
         Page<Forum> page = forumService.findPage(forumQueryVO);
         PageVO<ForumVO> pageVO = forumService.page2VO(page);
         List<UserDTO> userDTOList = userService.findAllByIdList(page.get().map(Forum::getUid).collect(Collectors.toList()));
         List<ForumVO> forumVOList = forumService.forumList2VO(page.getContent(), userDTOList, forumQueryVO.getLoginId());
         pageVO.setContent(forumVOList);
-        return RestResponse.success(pageVO);
+        return pageVO;
     }
+
 
     @ApiOperation("点赞")
     @ApiImplicitParam(name = "ItemIdDTO", value = "点赞", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
@@ -91,6 +125,7 @@ public class ForumController {
         ForumDTO forumDTO = forumService.findById(itemIdVO.getId());
         UserDTO userDTO = userService.findById(forumDTO.getUid());
         ForumVO forumVO = forumService.dto2vo(forumDTO, userDTO, itemIdVO.getUid());
+        forumService.addJl(itemIdVO);
         return RestResponse.success(forumVO);
     }
 
@@ -102,7 +137,7 @@ public class ForumController {
         Page<Pl> plPage = plService.findPage(plQueryVO);
         PageVO<PlVO> plPageVO = plService.page2vo(plPage);
         List<UserDTO> userDTOList = userService.findAllByIdList(plPage.get().map(Pl::getUid).collect(Collectors.toList()));
-        List<PlVO> plVOList = plService.plAddUserInfo(plPageVO.getContent(),userDTOList);
+        List<PlVO> plVOList = plService.plAddUserInfo(plPageVO.getContent(), userDTOList);
         plPageVO.setContent(plVOList);
         return RestResponse.success(plPageVO);
     }
@@ -123,10 +158,8 @@ public class ForumController {
     @ApiImplicitParam(name = "ItemIdDTO", value = "用户数据", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
     @PostMapping(value = "/userdata")
     public RestResponse<UserForumVO> userdata(@RequestBody ItemIdVO itemIdVO) {
-        UserForumVO userForumVO = new UserForumVO();
-        userForumVO.setTiezi(1);
-        userForumVO.setPl(2);
-        userForumVO.setDz(3);
+        UserForumVO userForumVO = forumService.findUserDataStatistics(itemIdVO.getUid());
+
         return RestResponse.success(userForumVO);
     }
 

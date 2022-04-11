@@ -3,18 +3,22 @@ package com.example.luntan.pojo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "l_dz")
-public class Dz {
+@Table(name = "l_label")
+public class Label {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer uid;
+    private String name;
 
-    private Integer fid;
+    private String ioc;
 
-    private Integer fUid;
+    private Instant ctime;
+
+    private Integer sort;
 }
