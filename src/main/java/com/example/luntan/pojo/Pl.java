@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
-@Table(name = "l_pl")
+@Table(name = "luntan_pl")
 public class Pl {
 
     @Id

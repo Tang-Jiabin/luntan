@@ -26,7 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlServiceImpl implements PlService {
 
-    private PlRepository plRepository;
+    private final PlRepository plRepository;
 
 
     @Override

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
-@Table(name = "l_forum")
+@Table(name = "luntan_forum")
 public class Forum {
 
     @Id

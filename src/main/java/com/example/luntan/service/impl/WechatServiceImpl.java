@@ -7,6 +7,7 @@ import com.example.luntan.dto.UserDTO;
 import com.example.luntan.service.UserService;
 import com.example.luntan.service.WechatService;
 import com.example.luntan.util.OkHttpUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,12 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class WechatServiceImpl implements WechatService {
 
     private final UserService userService;
 
-    public WechatServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
+
 
     @Override
     public UserDTO getOpenid(String code) {

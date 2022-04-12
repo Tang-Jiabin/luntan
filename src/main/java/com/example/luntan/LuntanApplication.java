@@ -1,12 +1,12 @@
 package com.example.luntan;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
+@EnableAsync
 @EnableOpenApi
 @SpringBootApplication
 public class LuntanApplication {

@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "l_user")
+@Table(name = "luntan_user")
 public class User {
 
     @Id

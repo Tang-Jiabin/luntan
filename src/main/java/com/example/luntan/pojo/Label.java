@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "l_label")
+@Table(name = "luntan_label")
 public class Label {
 
     @Id

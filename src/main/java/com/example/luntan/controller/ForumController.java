@@ -1,5 +1,6 @@
 package com.example.luntan.controller;
 
+import com.example.luntan.common.DataModelTypeEnum;
 import com.example.luntan.common.RestResponse;
 import com.example.luntan.dto.ForumDTO;
 import com.example.luntan.dto.UserDTO;
@@ -7,6 +8,7 @@ import com.example.luntan.pojo.Forum;
 import com.example.luntan.pojo.Jl;
 import com.example.luntan.pojo.Pl;
 import com.example.luntan.pojo.Sc;
+import com.example.luntan.service.DataModelService;
 import com.example.luntan.service.ForumService;
 import com.example.luntan.service.PlService;
 import com.example.luntan.service.UserService;
@@ -34,14 +36,16 @@ import java.util.stream.Collectors;
 public class ForumController {
 
 
-    private final ForumService forumService;
-    private final UserService userService;
     private final PlService plService;
+    private final UserService userService;
+    private final ForumService forumService;
+    private final DataModelService dataModelService;
 
-    public ForumController(ForumService forumService, UserService userService, PlService plService) {
+    public ForumController(ForumService forumService, UserService userService, PlService plService, DataModelService dataModelService) {
         this.forumService = forumService;
         this.userService = userService;
         this.plService = plService;
+        this.dataModelService = dataModelService;
     }
 
     @ApiOperation("帖子列表")
@@ -91,6 +95,7 @@ public class ForumController {
     @PostMapping(value = "/dz")
     public RestResponse<Object> dz(@RequestBody ItemIdVO itemIdVO) {
         forumService.dz(itemIdVO.getUid(), itemIdVO.getId());
+        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.DZ);
         return RestResponse.success();
     }
 
@@ -107,6 +112,7 @@ public class ForumController {
     @PostMapping(value = "/sc")
     public RestResponse<Object> sc(@RequestBody ItemIdVO itemIdVO) {
         forumService.sc(itemIdVO.getUid(), itemIdVO.getId());
+        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.SC);
         return RestResponse.success();
     }
 
@@ -126,6 +132,7 @@ public class ForumController {
         UserDTO userDTO = userService.findById(forumDTO.getUid());
         ForumVO forumVO = forumService.dto2vo(forumDTO, userDTO, itemIdVO.getUid());
         forumService.addJl(itemIdVO);
+        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.CK);
         return RestResponse.success(forumVO);
     }
 
@@ -150,6 +157,7 @@ public class ForumController {
             return RestResponse.error(411, "请输入评论内容");
         }
         plService.add(plAddVO);
+        dataModelService.add(plAddVO.getUid(),plAddVO.getId(), DataModelTypeEnum.PL);
         return RestResponse.success();
     }
 

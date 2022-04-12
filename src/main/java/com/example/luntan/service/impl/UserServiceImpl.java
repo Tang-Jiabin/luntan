@@ -5,6 +5,7 @@ import com.example.luntan.dao.UserRepository;
 import com.example.luntan.dto.UserDTO;
 import com.example.luntan.pojo.User;
 import com.example.luntan.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+
 
     @Override
     public void login(UserDTO userDTO) {

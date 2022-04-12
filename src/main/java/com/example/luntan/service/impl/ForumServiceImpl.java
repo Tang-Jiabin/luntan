@@ -5,11 +5,10 @@ import com.example.luntan.common.APIException;
 import com.example.luntan.dao.*;
 import com.example.luntan.dto.ForumDTO;
 import com.example.luntan.dto.UserDTO;
-import com.example.luntan.pojo.Dz;
-import com.example.luntan.pojo.Forum;
-import com.example.luntan.pojo.Jl;
-import com.example.luntan.pojo.Sc;
+import com.example.luntan.pojo.*;
 import com.example.luntan.service.ForumService;
+import com.example.luntan.service.Recommend;
+import com.example.luntan.service.Similarity;
 import com.example.luntan.vo.*;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.data.domain.Page;
@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -38,6 +39,7 @@ public class ForumServiceImpl implements ForumService {
     private final PlRepository plRepository;
     private final JlRepository jlRepository;
     private final ForumRepository forumRepository;
+    private final DataModelRepository dataModelRepository;
 
 
     @Override
@@ -56,8 +58,16 @@ public class ForumServiceImpl implements ForumService {
 
         switch (forumQueryVO.getLx() == null ? 1 : forumQueryVO.getLx()) {
             case 1:
-                //TODO 推荐 按照推荐算法排序
+                List<DataModel> dataModelList = dataModelRepository.findAll();
+                //计算相似度
+                Similarity similarity = new PearsonCorrelationSimilarity(dataModelList);
+                //构建基于用户的推荐系统
+                Recommend recommend = new GenericUserBasedRecommender(dataModelList, similarity);
+                //推荐
+                List<Integer> fidList = recommend.recommendedBecause(forumQueryVO.getUid(), forumQueryVO.getPage(), forumQueryVO.getLimit());
+
                 forumQueryVO.setLx(null);
+                forumQueryVO.setIds(fidList);
                 pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "ctime");
                 break;
             case 2:
@@ -212,6 +222,7 @@ public class ForumServiceImpl implements ForumService {
         return scRepository.findAllByUid(uid);
     }
 
+    @Async
     @Override
     public void addJl(ItemIdVO itemIdVO) {
         if (itemIdVO.getUid() != null && itemIdVO.getId() != null) {
