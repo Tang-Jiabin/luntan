@@ -15,4 +15,7 @@ public interface UserService {
     List<UserDTO> findAllByIdList(List<Integer> uidList);
 
     UserDTO findById(Integer uid);
+
+    Integer findCount();
+
 }

@@ -110,14 +110,21 @@
             dataType: "json",
             data: JSON.stringify(adminDTO),
             success: function (data) {
-                // location.href = 'index.html'
-                data = jQuery.parseJSON(data)
-                $.cookie('data',data)
-                var a = $.cookie('data')
-                console.log(a.name)
-
+                console.log(data)
+                console.log(data.code === 200)
+                if(data.code === 200){
+                    console.log(data.data)
+                    data = JSON.stringify(data.data)
+                    $.cookie('user',data)
+                    location.href = 'index.html'
+                }else {
+                    console.log("用户名或密码不正确")
+                    alert("用户名或密码不正确")
+                }
+            },
+            error:function (data) {
+                alert("用户名或密码不正确")
             }
-
         })
 
 

@@ -56,7 +56,7 @@ public class ForumServiceImpl implements ForumService {
         int page = forumQueryVO.getPage() <= 1 ? 0 : forumQueryVO.getPage() - 1;
         Pageable pageable = null;
 
-        switch (forumQueryVO.getLx() == null ? 1 : forumQueryVO.getLx()) {
+        switch (forumQueryVO.getLx() == null || forumQueryVO.getLx() == 0 ? 1 : forumQueryVO.getLx()) {
             case 1:
                 List<DataModel> dataModelList = dataModelRepository.findAll();
                 //计算相似度
@@ -239,6 +239,11 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public List<Jl> findJlList(Integer loginId) {
         return jlRepository.findAllByUid(loginId);
+    }
+
+    @Override
+    public Integer findCount() {
+        return forumRepository.findCount();
     }
 
     private void addScInfo(ForumVO forumVO, Integer loginId) {

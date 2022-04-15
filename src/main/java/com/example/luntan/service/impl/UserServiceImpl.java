@@ -74,4 +74,9 @@ public class UserServiceImpl implements UserService {
         userOptional.ifPresent(user -> BeanUtils.copyProperties(user, userDTO));
         return userDTO;
     }
+
+    @Override
+    public Integer findCount() {
+        return userRepository.findCount();
+    }
 }

@@ -9,11 +9,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PlRepository extends JpaRepository<Pl,Integer> , JpaSpecificationExecutor<Pl> {
+public interface PlRepository extends JpaRepository<Pl, Integer>, JpaSpecificationExecutor<Pl> {
 
-    Optional<Pl> findFirstByFidAndPidOrderByStorey(Integer fid,Integer pid);
-    Optional<Pl> findFirstByFidAndPidOrderByStoreyDesc(Integer fid,Integer pid);
+    Optional<Pl> findFirstByFidAndPidOrderByStorey(Integer fid, Integer pid);
 
-    @Query(nativeQuery = true,value = "SELECT count(*) from l_pl where uid = ?1")
+    Optional<Pl> findFirstByFidAndPidOrderByStoreyDesc(Integer fid, Integer pid);
+
+    @Query(nativeQuery = true, value = "SELECT count(*) from luntan_pl where uid = ?1")
     Integer findCountByUid(Integer uid);
+
+    @Query(nativeQuery = true, value = "SELECT count(*) from luntan_pl ")
+    Integer findCount();
 }

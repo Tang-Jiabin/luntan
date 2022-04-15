@@ -19,4 +19,6 @@ public interface PlService {
 
     List<PlVO> plAddUserInfo(List<PlVO> content, List<UserDTO> userDTOList);
 
+    Integer findCount();
+
 }

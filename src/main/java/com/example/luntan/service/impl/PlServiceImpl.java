@@ -84,6 +84,11 @@ public class PlServiceImpl implements PlService {
         return content;
     }
 
+    @Override
+    public Integer findCount() {
+        return plRepository.findCount();
+    }
+
     private List<PlVO> poList2vo(List<Pl> plList) {
         List<PlVO> plVOList = new ArrayList<>();
         for (Pl pl : plList) {

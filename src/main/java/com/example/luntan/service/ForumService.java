@@ -35,4 +35,7 @@ public interface ForumService {
     void addJl(ItemIdVO itemIdVO);
 
     List<Jl> findJlList(Integer loginId);
+
+    Integer findCount();
+
 }

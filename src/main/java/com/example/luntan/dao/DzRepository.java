@@ -14,8 +14,9 @@ public interface DzRepository extends JpaRepository<Dz, Integer> {
 
     Optional<Dz> findByUidAndFid(Integer uid, Integer id);
 
-    @Query(nativeQuery = true, value = "SELECT count(*) from l_dz where f_uid = ?1")
+    @Query(nativeQuery = true, value = "SELECT count(*) from luntan_dz where f_uid = ?1")
     Integer findCountByFUid(Integer uid);
 
-
+    @Query(nativeQuery = true,value = "SELECT count(*) FROM luntan_dz")
+    Integer findCount();
 }

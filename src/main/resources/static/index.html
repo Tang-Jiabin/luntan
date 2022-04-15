@@ -9,6 +9,19 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/materialdesignicons.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
+    <style>
+        .content {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 200px;
+        }
+
+        .content:hover {
+            height: auto;
+            white-space: normal;
+        }
+    </style>
 </head>
 
 <body>
@@ -67,7 +80,7 @@
                     <ul class="topbar-right">
                         <li class="dropdown dropdown-profile">
                             <a href="javascript:void(0)" data-toggle="dropdown">
-                                <span>笔下光年 <span class="caret"></span></span>
+                                <span id="username">admin <span class="caret"></span></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -98,7 +111,7 @@
                             <div class="card-body clearfix">
                                 <div class="pull-right">
                                     <p class="h6 text-white m-t-0">帖子总数</p>
-                                    <p class="h3 text-white m-b-0 fa-1-5x">102,125.00</p>
+                                    <p class="h3 text-white m-b-0 fa-1-5x" id="tieCount">0</p>
                                 </div>
                                 <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                         class="mdi mdi-currency-cny fa-1-5x"></i></span></div>
@@ -111,7 +124,7 @@
                             <div class="card-body clearfix">
                                 <div class="pull-right">
                                     <p class="h6 text-white m-t-0">用户总数</p>
-                                    <p class="h3 text-white m-b-0 fa-1-5x">920,000</p>
+                                    <p class="h3 text-white m-b-0 fa-1-5x" id="userCount">0</p>
                                 </div>
                                 <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                         class="mdi mdi-account fa-1-5x"></i></span></div>
@@ -124,7 +137,7 @@
                             <div class="card-body clearfix">
                                 <div class="pull-right">
                                     <p class="h6 text-white m-t-0">点赞总数</p>
-                                    <p class="h3 text-white m-b-0 fa-1-5x">34,005,000</p>
+                                    <p class="h3 text-white m-b-0 fa-1-5x" id="dzCount">0</p>
                                 </div>
                                 <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                         class="mdi mdi-arrow-down-bold fa-1-5x"></i></span></div>
@@ -137,7 +150,7 @@
                             <div class="card-body clearfix">
                                 <div class="pull-right">
                                     <p class="h6 text-white m-t-0">评论总数</p>
-                                    <p class="h3 text-white m-b-0 fa-1-5x">153 条</p>
+                                    <p class="h3 text-white m-b-0 fa-1-5x" id="plCount">0</p>
                                 </div>
                                 <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                         class="mdi mdi-comment-outline fa-1-5x"></i></span></div>
@@ -159,119 +172,16 @@
                                     <table class="table table-hover">
                                         <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>项目名称</th>
-                                            <th>开始日期</th>
-                                            <th>截止日期</th>
-                                            <th>状态</th>
-                                            <th>进度</th>
+                                            <th width="10%">#</th>
+                                            <th width="10%">发帖人</th>
+                                            <th width="20%">标签</th>
+                                            <th width="10%">日期</th>
+                                            <th width="50%">内容</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>设计新主题</td>
-                                            <td>10/02/2019</td>
-                                            <td>12/05/2019</td>
-                                            <td><span class="label label-warning">待定</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-warning"
-                                                         style="width: 45%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>网站重新设计</td>
-                                            <td>01/03/2019</td>
-                                            <td>12/04/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 30%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>模型设计</td>
-                                            <td>10/10/2019</td>
-                                            <td>12/11/2019</td>
-                                            <td><span class="label label-warning">待定</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-warning"
-                                                         style="width: 25%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>后台管理系统模板设计</td>
-                                            <td>25/01/2019</td>
-                                            <td>09/05/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 55%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>前端设计</td>
-                                            <td>10/10/2019</td>
-                                            <td>12/12/2019</td>
-                                            <td><span class="label label-danger">未开始</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-danger"
-                                                         style="width: 0%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td>桌面软件测试</td>
-                                            <td>10/01/2019</td>
-                                            <td>29/03/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 75%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>7</td>
-                                            <td>APP改版开发</td>
-                                            <td>25/02/2019</td>
-                                            <td>12/05/2019</td>
-                                            <td><span class="label label-danger">暂停</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-danger"
-                                                         style="width: 15%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>8</td>
-                                            <td>Logo设计</td>
-                                            <td>10/02/2019</td>
-                                            <td>01/03/2019</td>
-                                            <td><span class="label label-warning">完成</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 100%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <tbody id="tbody">
+
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -295,8 +205,163 @@
 
 <!--图表插件-->
 <script type="text/javascript" src="js/Chart.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript">
+    let user = null;
+    let labels = null;
+    let count = -1;
+    let queryData = {"page":1,"limit":20,"title":"","lx":2}
+    $(function () {
+        checking()
+        label()
+        statistics()
+        table()
+    });
 
+    function label() {
+        $.ajax({
+            type: "POST",
+            url: "/admin/label/List",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(user),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    labels = data.data
+                }
+
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+    function getLabelName(labelId) {
+
+            for (let i = 0; i < labels.length; i++) {
+                console.log(labels[i])
+                console.log(labelId)
+                if (labels[i].id === labelId) {
+                    return labels[i].name
+                }
+                if (labelId===0){
+                    return '无标签'
+                }
+            }
+
+    }
+
+
+
+
+    function formatterStatus(value) {
+        let temp = "";
+        if (value === '') {
+            temp = "-";
+        } else {
+            temp = value;
+        }
+        const text = value;
+        const flag = text.length > 80;
+        if (flag) {
+            count = count + 1;
+            temp = "<p>" + text.substring(0, 80)
+                + "<span id='hide" + count + "' style='display:none'>" + text.substring(80) + "</span>"
+                + "<a href='javascript:;' id='open" + count + "' onclick='showhide(" + count + ")'>...Show more</a></p>"
+        }
+
+        return temp;
+    }
+
+    function showhide(count) {
+        if ($("#open" + count).text() === "...Show more") {
+            $("#open" + count).text("Pick up");
+            $("#hide" + count).show();
+        } else {
+            $("#open" + count).text("...Show more");
+            $("#hide" + count).hide();
+        }
+    }
+
+    function table() {
+        $.ajax({
+            type: "POST",
+            url: "/admin/tie/List",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(queryData),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    let tieList = data.data.content
+                    let html = ''
+                    for (let i = 0; i < tieList.length; i++) {
+                        html += '<tr>' +
+                            '<td>' + tieList[i].id + '</td>' +
+                            '<td>' + tieList[i].uname + '</td>' +
+                            '<td><span class="label label-warning">' + getLabelName(tieList[i].labelsid) + '</span></td>' +
+                            '<td>' + tieList[i].ctime + '</td>' +
+                            '<td >' + formatterStatus(tieList[i].content) + '</td>' +
+                            ' </tr>'
+                    }
+                    $('#tbody').html(html)
+                }
+
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+    function statistics() {
+        $.ajax({
+            type: "POST",
+            url: "/admin/statistics",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(user),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    const tieCount = data.data.tieCount;
+                    $('#tieCount').html(tieCount)
+                    //用户
+                    const userCount = data.data.userCount
+                    $('#userCount').html(userCount)
+                    //点赞
+                    const dzCount = data.data.dzCount
+                    $('#dzCount').html(dzCount)
+                    //评论
+                    const plCount = data.data.plCount
+                    $('#plCount').html(plCount)
+                }
+
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+    function checking() {
+        let userJson = $.cookie('user');
+        if (userJson == null) {
+            alert("请先登录");
+            location.href = "login.html";
+        }
+        user = JSON.parse(userJson)
+        console.log(user.nickname)
+        $('#username').html(user.nickname)
+        queryData.name = user.name
+        queryData.pwd = user.pwd
+        queryData.nickname = user.nickname
+    }
 </script>
 </body>
 </html>

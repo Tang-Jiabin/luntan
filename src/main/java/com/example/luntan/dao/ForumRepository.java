@@ -11,4 +11,7 @@ public interface ForumRepository extends JpaRepository<Forum,Integer>, JpaSpecif
 
     @Query(nativeQuery = true,value = "SELECT count(*) FROM luntan_forum WHERE uid = ?1")
     Integer findCountByUid(Integer uid);
+
+    @Query(nativeQuery = true,value = "SELECT count(*) FROM luntan_forum")
+    Integer findCount();
 }
