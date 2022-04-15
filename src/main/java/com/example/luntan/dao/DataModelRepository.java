@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface DataModelRepository extends JpaRepository<DataModel, Integer> {
 
-    Optional<DataModel> findByUidAndAndFid(Integer uid, Integer fid);
+    Optional<DataModel> findByUidAndFid(Integer uid, Integer fid);
 }

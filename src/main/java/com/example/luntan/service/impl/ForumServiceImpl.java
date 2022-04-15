@@ -64,7 +64,7 @@ public class ForumServiceImpl implements ForumService {
                 //构建基于用户的推荐系统
                 Recommend recommend = new GenericUserBasedRecommender(dataModelList, similarity);
                 //推荐
-                List<Integer> fidList = recommend.recommendedBecause(forumQueryVO.getUid(), forumQueryVO.getPage(), forumQueryVO.getLimit());
+                List<Integer> fidList = recommend.recommendedBecause(forumQueryVO.getLoginId(), forumQueryVO.getPage(), forumQueryVO.getLimit());
 
                 forumQueryVO.setLx(null);
                 forumQueryVO.setIds(fidList);

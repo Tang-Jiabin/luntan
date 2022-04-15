@@ -5,5 +5,5 @@ import java.util.Set;
 
 public interface Recommend {
 
-    List<Integer> recommendedBecause(Integer uid, Integer page, Integer limit);
+    List<Integer> recommendedBecause(Integer id, Integer page, Integer limit);
 }

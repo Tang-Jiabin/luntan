@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface Similarity {
 
-    List<Distances> getDistances(Integer uid);
+    List<Distances> getDistances(Integer id, Integer type);
 }

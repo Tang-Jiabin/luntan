@@ -3,6 +3,7 @@ package com.example.luntan.re;
 import com.example.luntan.pojo.DataModel;
 import com.example.luntan.service.Recommend;
 import com.example.luntan.service.Similarity;
+import com.example.luntan.service.impl.GenericItemBasedRecommender;
 import com.example.luntan.service.impl.GenericUserBasedRecommender;
 import com.example.luntan.service.impl.PearsonCorrelationSimilarity;
 
@@ -19,38 +20,64 @@ public class Recommend2 {
         dataModel.setId(1);
         dataModel.setUid(1);
         dataModel.setFid(1);
-        dataModel.setScore(50);
+        dataModel.setScore(302);
         dataModelList.add(dataModel);
         dataModel = new DataModel();
         dataModel.setId(2);
         dataModel.setUid(1);
         dataModel.setFid(2);
-        dataModel.setScore(33);
+        dataModel.setScore(253);
         dataModelList.add(dataModel);
         dataModel = new DataModel();
         dataModel.setId(3);
-        dataModel.setUid(3);
-        dataModel.setFid(1);
-        dataModel.setScore(49);
+        dataModel.setUid(1);
+        dataModel.setFid(3);
+        dataModel.setScore(300);
         dataModelList.add(dataModel);
         dataModel = new DataModel();
         dataModel.setId(4);
-        dataModel.setUid(3);
-        dataModel.setFid(2);
-        dataModel.setScore(32);
+        dataModel.setUid(2);
+        dataModel.setFid(1);
+        dataModel.setScore(302);
         dataModelList.add(dataModel);
         dataModel = new DataModel();
         dataModel.setId(5);
-        dataModel.setUid(4);
-        dataModel.setFid(1);
-        dataModel.setScore(1);
+        dataModel.setUid(2);
+        dataModel.setFid(2);
+        dataModel.setScore(253);
         dataModelList.add(dataModel);
         dataModel = new DataModel();
         dataModel.setId(6);
-        dataModel.setUid(4);
-        dataModel.setFid(2);
-        dataModel.setScore(50);
+        dataModel.setUid(2);
+        dataModel.setFid(3);
+        dataModel.setScore(310);
         dataModelList.add(dataModel);
+        dataModel = new DataModel();
+        dataModel.setId(6);
+        dataModel.setUid(2);
+        dataModel.setFid(4);
+        dataModel.setScore(210);
+        dataModelList.add(dataModel);
+
+        dataModel = new DataModel();
+        dataModel.setId(7);
+        dataModel.setUid(3);
+        dataModel.setFid(1);
+        dataModel.setScore(300);
+        dataModelList.add(dataModel);
+        dataModel = new DataModel();
+        dataModel.setId(8);
+        dataModel.setUid(3);
+        dataModel.setFid(2);
+        dataModel.setScore(250);
+        dataModelList.add(dataModel);
+        dataModel = new DataModel();
+        dataModel.setId(9);
+        dataModel.setUid(3);
+        dataModel.setFid(3);
+        dataModel.setScore(290);
+        dataModelList.add(dataModel);
+
         dataModelList.forEach(System.out::println);
         re(dataModelList);
 
@@ -61,8 +88,10 @@ public class Recommend2 {
         Similarity similarity = new PearsonCorrelationSimilarity(dataModelList);
         //构建基于用户的推荐系统
         Recommend recommend = new GenericUserBasedRecommender(dataModelList, similarity);
+        //构建基于物品的推荐系统
+//        Recommend recommend = new GenericItemBasedRecommender(dataModelList, similarity);
         //推荐
-        List<Integer> list = recommend.recommendedBecause(6, 1, 10);
+        List<Integer> list = recommend.recommendedBecause(1, 1, 10);
 
         list.forEach(System.out::println);
     }

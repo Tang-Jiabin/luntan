@@ -19,10 +19,11 @@ public class GenericUserBasedRecommender implements Recommend {
     }
 
     @Override
-    public List<Integer> recommendedBecause(Integer uid, Integer page, Integer limit) {
-        List<Distances> distances = similarity.getDistances(uid);
-        List<Distances> sortList = distances.stream().sorted(Comparator.comparing(Distances::getDis).reversed()).collect(Collectors.toList());
-        sortList.forEach(System.out::println);
+    public List<Integer> recommendedBecause(Integer id, Integer page, Integer limit) {
+        List<Distances> distances = similarity.getDistances(id, 1);
+        List<Distances> sortList = distances.stream().filter(dis -> {
+            return dis.getDis() > 0;
+        }).sorted(Comparator.comparing(Distances::getDis).reversed()).collect(Collectors.toList());
         Set<Integer> recommendFidSet = new HashSet<>();
         Set<Integer> userFidSet = new HashSet<>();
         for (Distances userDis : sortList) {
@@ -30,7 +31,7 @@ public class GenericUserBasedRecommender implements Recommend {
                 if (userDis.getId().equals(dataModel.getUid())) {
                     recommendFidSet.add(dataModel.getFid());
                 }
-                if (dataModel.getUid().equals(uid)) {
+                if (dataModel.getUid().equals(id)) {
                     userFidSet.add(dataModel.getFid());
                 }
             }

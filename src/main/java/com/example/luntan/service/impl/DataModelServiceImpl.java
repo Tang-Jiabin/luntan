@@ -21,7 +21,7 @@ public class DataModelServiceImpl implements DataModelService {
     @Async
     @Override
     public void add(Integer uid, Integer id, DataModelTypeEnum typeEnum) {
-        Optional<DataModel> dataModelOptional = dataModelRepository.findByUidAndAndFid(uid, id);
+        Optional<DataModel> dataModelOptional = dataModelRepository.findByUidAndFid(uid, id);
         dataModelOptional.ifPresentOrElse(dataModel -> {
             typeSwitch(typeEnum, dataModel);
         }, () -> {
