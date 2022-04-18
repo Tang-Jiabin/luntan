@@ -38,4 +38,5 @@ public interface ForumService {
 
     Integer findCount();
 
+    void del(Integer id);
 }

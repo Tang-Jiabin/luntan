@@ -36,9 +36,9 @@
                         <li class="nav-item nav-item-has-subnav">
                             <a href="biaoqian.html"><i class="mdi mdi-label"></i> 标签管理</a>
                         </li>
-                        <li class="nav-item nav-item-has-subnav">
-                            <a href="admin.html"><i class="mdi mdi-account-box"></i> 管理员</a>
-                        </li>
+                        <!--                        <li class="nav-item nav-item-has-subnav">-->
+                        <!--                            <a href="admin.html"><i class="mdi mdi-account-box"></i> 管理员</a>-->
+                        <!--                        </li>-->
                     </ul>
                 </nav>
 
@@ -71,8 +71,8 @@
                                 <span id="username">admin <span class="caret"></span></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
-                                <li><a href="lyear_pages_edit_pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                                <!--                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>-->
+                                <li><a href="pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
                                 </li>
                                 <li><a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
                                 <li class="divider"></li>
@@ -108,9 +108,11 @@
 
                                                 </ul>
                                             </div>
-                                            <input type="text" class="form-control " placeholder="Search for...">
+                                            <input id="title" type="text" class="form-control"
+                                                   placeholder="Search for...">
                                             <span class="input-group-btn">
-                                                <button class="btn btn-default" type="button">搜索</button>
+                                                <button class="btn btn-default" onclick="search()"
+                                                        type="button">搜索</button>
                                             </span>
                                         </div>
                                     </div>
@@ -183,15 +185,16 @@
         table()
     });
 
-    function clickLabel(id,name){
+    function clickLabel(id, name) {
         queryData.lx = id
         console.log(id)
         console.log(name)
         $('#labelName').html(name)
     }
 
-    function search(){
-
+    function search() {
+        let title = $('#title').val()
+        table(1, title)
     }
 
     function label() {
@@ -205,9 +208,9 @@
                 console.log(data)
                 if (data.code === 200) {
                     labels = data.data
-                    let html = '<li onclick="clickLabel(0,\'\')"><a>'+labels[i].name+'</a></li>'
+                    let html = '<li onclick="clickLabel(0,\'\')"><a>标签</a></li>'
                     for (let i = 0; i < labels.length; i++) {
-                        html +='<li onclick="clickLabel('+labels[i].id+',\''+labels[i].name+'\')"><a>'+labels[i].name+'</a></li>'
+                        html += '<li onclick="clickLabel(' + labels[i].id + ',\'' + labels[i].name + '\')"><a>' + labels[i].name + '</a></li>'
                     }
                     $('#label').html(html)
                 }
@@ -252,9 +255,9 @@
             index = page + 3
             html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
         }
-        if (totalPages - page > 1) {
+        if (totalPages - page >= 1) {
             index = page + 1
-            html += '<li><a onclick="table(' +index + ')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+            html += '<li><a onclick="table(' + index + ')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
         }
         $('#page').html(html)
     }
@@ -262,6 +265,9 @@
     function table(page, title) {
         if (page != null) {
             queryData.page = page
+        }
+        if (title != null) {
+            queryData.title = title
         }
         $.ajax({
             type: "POST",
@@ -282,12 +288,34 @@
                             '<td><span class="label label-warning">' + getLabelName(tieList[i].labelsid) + '</span></td>' +
                             '<td>' + tieList[i].ctime + '</td>' +
                             '<td >' + formatterStatus(tieList[i].content) + '</td>' +
-                            '<td >删除</td>' +
+                            '<td ><button onclick="del(' + tieList[i].id + ')" class="btn btn-w-xs btn-danger">删除</button></td>' +
                             ' </tr>'
                     }
                     $('#tbody').html(html)
                 }
 
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+    function del(id) {
+        let params = {"id": id}
+        $.ajax({
+            type: "POST",
+            url: "/admin/tie/del",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    alert("成功");
+                    location.reload()
+                }
             },
             error: function (data) {
                 console.log(data)

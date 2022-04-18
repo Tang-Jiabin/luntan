@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
@@ -28,4 +30,15 @@ public class User {
 
     private Instant ctime;
 
+    public String getCtime() {
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
+        if (this.ctime != null) {
+            return dateFormat.format(this.ctime);
+        }
+        return "";
+    }
+
+    public String getSex() {
+        return this.sex == null || this.sex == 0 ? "男" : "女";
+    }
 }

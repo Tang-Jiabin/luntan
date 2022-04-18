@@ -33,8 +33,7 @@ import java.lang.reflect.Method;
 public class WebLogAspect {
 
     private String unknown = "unknown";
-    private String IP = "";
-    /**
+       /**
      * 换行符
      */
     private static final String LINE_SEPARATOR = System.lineSeparator();
@@ -49,18 +48,17 @@ public class WebLogAspect {
     /**
      * 在切点之前织入
      *
-     * @param joinPoint
-     * @throws Throwable
      */
     @Before("webLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
 
         // 获取 @WebLog 注解的描述信息
         String methodDescription = getAspectLogDescription(joinPoint);
-        String ip = getIp(request);
+        String ip = getIP(request);
         // 打印请求相关参数
         log.info("========================================== Start ==========================================");
         // 打印请求 url
@@ -76,14 +74,26 @@ public class WebLogAspect {
         // 打印请求入参
         try {
             log.info("Request Args   : {}", JSONObject.toJSONString(joinPoint.getArgs()));
-        }catch (Exception e){
-            log.info("Request Args   : {}", "{}");
+        } catch (Exception e) {
+            log.info("Request Args   : {}", unknown);
         }
-
-        IP = ip;
     }
 
-    private String getIp(HttpServletRequest request) {
+
+    @Around("webLog()")
+    public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        Object result = proceedingJoinPoint.proceed();
+        // 打印出参
+        log.info("Response Args  : {}", JSONObject.toJSONString(result));
+        // 执行耗时
+        log.info("Time-Consuming : {} ms", System.currentTimeMillis() - startTime);
+        log.info("=========================================== End ===========================================" + LINE_SEPARATOR);
+        return result;
+    }
+
+
+    private String getIP(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
 
         if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
@@ -101,53 +111,22 @@ public class WebLogAspect {
         if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-
         return ip;
     }
 
-    /**
-     * 环绕
-     *
-     * @param proceedingJoinPoint
-     * @return
-     * @throws Throwable
-     */
-    @Around("webLog()")
-    public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        Object result = null;
 
-        result = proceedingJoinPoint.proceed();
-
-        // 打印出参
-        log.info("Response Args  : {}", JSONObject.toJSONString(result));
-        // 执行耗时
-        log.info("Time-Consuming : {} ms", System.currentTimeMillis() - startTime);
-
-        log.info("=========================================== End ===========================================" + LINE_SEPARATOR);
-        return result;
-    }
-
-
-    /**
-     * 获取切面注解的描述
-     *
-     * @param joinPoint 切点
-     * @return 描述信息
-     * @throws Exception
-     */
     public String getAspectLogDescription(JoinPoint joinPoint)
             throws Exception {
         String targetName = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
         Object[] arguments = joinPoint.getArgs();
-        Class targetClass = Class.forName(targetName);
+        Class<?> targetClass = Class.forName(targetName);
         Method[] methods = targetClass.getMethods();
-        StringBuilder description = new StringBuilder("");
+        StringBuilder description = new StringBuilder();
         for (Method method : methods) {
             if (method.getName().equals(methodName)) {
-                Class[] clazzs = method.getParameterTypes();
-                if (clazzs.length == arguments.length) {
+                Class<?>[] clazz = method.getParameterTypes();
+                if (clazz.length == arguments.length) {
                     description.append(method.getAnnotation(io.swagger.annotations.ApiOperation.class).value());
                     break;
                 }
@@ -155,5 +134,6 @@ public class WebLogAspect {
         }
         return description.toString();
     }
+
 
 }

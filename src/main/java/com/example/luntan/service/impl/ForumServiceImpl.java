@@ -13,21 +13,20 @@ import com.example.luntan.vo.*;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.data.domain.Page;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
-import java.util.Optional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -244,6 +243,11 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public Integer findCount() {
         return forumRepository.findCount();
+    }
+
+    @Override
+    public void del(Integer id) {
+        forumRepository.deleteById(id);
     }
 
     private void addScInfo(ForumVO forumVO, Integer loginId) {

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>首页</title>
+    <link rel="icon" href="favicon.ico" type="image/ico">
+    <meta name="author" content="yinqi">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+
+            <!-- logo -->
+            <div id="logo" class="sidebar-header">
+                <a href="index.html"><h1>管理系统</h1></a>
+            </div>
+            <div class="lyear-layout-sidebar-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer">
+                        <li class="nav-item nav-item-has-subnav"><a href="index.html"><i class="mdi mdi-home"></i> 后台首页</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="tiezi.html"><i class="mdi mdi-file"></i> 帖子管理</a>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="yonghu.html"><i class="mdi mdi-account"></i> 用户管理</a>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="biaoqian.html"><i class="mdi mdi-label"></i> 标签管理</a>
+                        </li>
+                        <!--                        <li class="nav-item nav-item-has-subnav">-->
+                        <!--                            <a href="admin.html"><i class="mdi mdi-account-box"></i> 管理员</a>-->
+                        <!--                        </li>-->
+                    </ul>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <p class="copyright">Copyright &copy; 2022. All rights reserved.</p>
+                </div>
+            </div>
+
+        </aside>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <header class="lyear-layout-header">
+
+            <nav class="navbar navbar-default">
+                <div class="topbar">
+
+                    <div class="topbar-left">
+                        <div class="lyear-aside-toggler">
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                        </div>
+                        <span class="navbar-page-title"> 后台首页 </span>
+                    </div>
+
+                    <ul class="topbar-right">
+                        <li class="dropdown dropdown-profile">
+                            <a href="javascript:void(0)" data-toggle="dropdown">
+                                <span id="username">admin <span class="caret"></span></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <!--                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>-->
+                                <li><a href="pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                                </li>
+                                <li><a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
+                                <li class="divider"></li>
+                                <li><a href="login.html"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                </div>
+            </nav>
+
+        </header>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="site-form">
+                                    <div class="form-group">
+                                        <label for="old-password">旧密码</label>
+                                        <input type="password" class="form-control" name="oldpwd" id="old-password"
+                                               placeholder="输入账号的原登录密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new-password">新密码</label>
+                                        <input type="password" class="form-control" name="newpwd" id="new-password"
+                                               placeholder="输入新的密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirm-password">确认新密码</label>
+                                        <input type="password" class="form-control" name="confirmpwd"
+                                               id="confirm-password" placeholder="输入新的密码">
+                                    </div>
+                                    <button type="button" onclick="submit()" class="btn btn-primary">修改密码</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+
+<!--图表插件-->
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/Chart.js"></script>
+<script type="text/javascript">
+    let user = null;
+    let queryData = {}
+
+    $(function () {
+        checking()
+
+    });
+
+
+    function checking() {
+        let userJson = $.cookie('user');
+        if (userJson == null) {
+            alert("请先登录");
+            location.href = "login.html";
+        }
+        user = JSON.parse(userJson)
+        console.log(user)
+        $('#username').html(user.nickname)
+        queryData.name = user.name
+        queryData.pwd = user.pwd
+        queryData.nickname = user.nickname
+    }
+
+    function submit() {
+        let oldp = $('#old-password').val()
+        let newp = $('#new-password').val()
+        let cfmp = $('#confirm-password').val()
+
+        if (cfmp !== newp || oldp !== queryData.pwd) {
+            alert("密码输入错误")
+            return
+        }
+        queryData.pwd = newp
+        queryData.nickname = oldp
+        $.ajax({
+            type: "POST",
+            url: "/admin/user/update",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(queryData),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    alert("成功")
+                    $.cookie('user', null);
+                    location.href = 'login.html'
+                }
+
+            },
+            error: function (data) {
+                console.log(data)
+                alert("修改失败")
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

@@ -13,7 +13,9 @@ public class UserVO {
 
     private String logo;
 
-    private Integer sex;
+    private String ctime;
+
+    private String sex;
 
     private String telephone;
 }

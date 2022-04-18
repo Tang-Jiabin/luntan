@@ -35,9 +35,9 @@
                         <li class="nav-item nav-item-has-subnav">
                             <a href="biaoqian.html"><i class="mdi mdi-label"></i> 标签管理</a>
                         </li>
-                        <li class="nav-item nav-item-has-subnav">
-                            <a href="admin.html"><i class="mdi mdi-account-box"></i> 管理员</a>
-                        </li>
+                        <!--                        <li class="nav-item nav-item-has-subnav">-->
+                        <!--                            <a href="admin.html"><i class="mdi mdi-account-box"></i> 管理员</a>-->
+                        <!--                        </li>-->
                     </ul>
                 </nav>
 
@@ -67,11 +67,11 @@
                     <ul class="topbar-right">
                         <li class="dropdown dropdown-profile">
                             <a href="javascript:void(0)" data-toggle="dropdown">
-                                <span>笔下光年 <span class="caret"></span></span>
+                                <span id="username">admin <span class="caret"></span></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
-                                <li><a href="lyear_pages_edit_pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                                <!--                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>-->
+                                <li><a href="pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
                                 </li>
                                 <li><a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
                                 <li class="divider"></li>
@@ -98,22 +98,11 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="input-group">
-                                            <div class="input-group-btn">
-                                                <button type="button" class="btn btn-default dropdown-toggle"
-                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">Action
-                                                    <span class="caret"></span></button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#">Action</a></li>
-                                                    <li><a href="#">Another action</a></li>
-                                                    <li><a href="#">Something else here</a></li>
-                                                    <li role="separator" class="divider"></li>
-                                                    <li><a href="#">Separated link</a></li>
-                                                </ul>
-                                            </div>
-                                            <input type="text" class="form-control " placeholder="Search for...">
+                                            <input id="title" type="text" class="form-control"
+                                                   placeholder="Search for...">
                                             <span class="input-group-btn">
-                                                <button class="btn btn-default" type="button">搜索</button>
+                                                <button class="btn btn-default" onclick="search()"
+                                                        type="button">搜索</button>
                                             </span>
                                         </div>
                                     </div>
@@ -135,141 +124,26 @@
                                     <table class="table table-hover">
                                         <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>项目名称</th>
-                                            <th>开始日期</th>
-                                            <th>截止日期</th>
-                                            <th>状态</th>
-                                            <th>进度</th>
+                                            <th width="10%">#</th>
+                                            <th width="15%">头像</th>
+                                            <th width="15%">昵称</th>
+                                            <th width="10%">性别</th>
+                                            <th width="10%">注册日期</th>
+                                            <th width="30%">签名</th>
+                                            <th width="10%">操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>设计新主题</td>
-                                            <td>10/02/2019</td>
-                                            <td>12/05/2019</td>
-                                            <td><span class="label label-warning">待定</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-warning"
-                                                         style="width: 45%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>网站重新设计</td>
-                                            <td>01/03/2019</td>
-                                            <td>12/04/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 30%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>模型设计</td>
-                                            <td>10/10/2019</td>
-                                            <td>12/11/2019</td>
-                                            <td><span class="label label-warning">待定</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-warning"
-                                                         style="width: 25%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>后台管理系统模板设计</td>
-                                            <td>25/01/2019</td>
-                                            <td>09/05/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 55%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>前端设计</td>
-                                            <td>10/10/2019</td>
-                                            <td>12/12/2019</td>
-                                            <td><span class="label label-danger">未开始</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-danger"
-                                                         style="width: 0%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td>桌面软件测试</td>
-                                            <td>10/01/2019</td>
-                                            <td>29/03/2019</td>
-                                            <td><span class="label label-success">进行中</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 75%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>7</td>
-                                            <td>APP改版开发</td>
-                                            <td>25/02/2019</td>
-                                            <td>12/05/2019</td>
-                                            <td><span class="label label-danger">暂停</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-danger"
-                                                         style="width: 15%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>8</td>
-                                            <td>Logo设计</td>
-                                            <td>10/02/2019</td>
-                                            <td>01/03/2019</td>
-                                            <td><span class="label label-warning">完成</span></td>
-                                            <td>
-                                                <div class="progress progress-striped progress-sm">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width: 100%;"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <tbody id="tbody">
+
+
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             <div class="card-footer">
                                 <nav aria-label="Page navigation" class="text-center">
-                                    <ul class="pagination">
-                                        <li>
-                                            <a href="#" aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
-                                        <li><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">5</a></li>
-                                        <li>
-                                            <a href="#" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
+                                    <ul class="pagination" id="page">
+
                                     </ul>
                                 </nav>
                             </div>
@@ -288,9 +162,167 @@
 <script type="text/javascript" src="js/main.min.js"></script>
 
 <!--图表插件-->
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/Chart.js"></script>
 <script type="text/javascript">
+    let user = null;
+    let labels = null;
+    let queryData = {"page": 1, "limit": 10, "title": "", "lx": 2}
 
+
+    $(function () {
+        checking()
+
+        table()
+    });
+
+
+    function search() {
+        let title = $('#title').val()
+        table(1, title)
+    }
+
+
+    function initPage(page, totalPages) {
+        let html = ''
+        let index = 0
+        if (page > 1) {
+            index = page - 1;
+            html += '<li><a onclick="table(' + index + ')" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+        }
+        if (page > 3) {
+            index = page - 3
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+            index = page - 2
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+            index = page - 1
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+        }
+        html += '<li class="page-item active" ><a onclick="table(' + page + ',"")">' + page + '</a></li>'
+        if (totalPages - page > 3) {
+            index = page + 1
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+            index = page + 2
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+            index = page + 3
+            html += '<li><a onclick="table(' + index + ')">' + index + '</a></li>'
+        }
+        if (totalPages - page >= 1) {
+            index = page + 1
+            html += '<li><a onclick="table(' + index + ')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+        }
+        $('#page').html(html)
+    }
+
+    function table(page, title) {
+        if (page != null) {
+            queryData.page = page
+        }
+        if (title != null) {
+            queryData.title = title
+        }
+        $.ajax({
+            type: "POST",
+            url: "/admin/user/List",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(queryData),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    initPage(data.data.page, data.data.totalPages)
+                    let userList = data.data.content
+                    let html = ''
+                    for (let i = 0; i < userList.length; i++) {
+                        html += '<tr>' +
+                            '<td>' + userList[i].id + '</td>' +
+                            '<td><img style="width: 40px;height: 40px" src="' + userList[i].logo + '"  alt="logo"/></td>' +
+                            '<td>' + userList[i].name + '</td>' +
+                            '<td>' + userList[i].sex + '</td>' +
+                            '<td>' + userList[i].ctime + '</td>' +
+                            '<td >' + formatterStatus(userList[i].sign) + '</td>' +
+                            '<td ><button onclick="del(' + userList[i].id + ')" class="btn btn-w-xs btn-danger">删除</button></td>' +
+                            ' </tr>'
+                    }
+                    $('#tbody').html(html)
+                }
+
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+    function del(id) {
+        let params = {"id": id}
+        $.ajax({
+            type: "POST",
+            url: "/admin/user/del",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    alert("成功");
+                    location.reload()
+
+                }
+            },
+            error: function (data) {
+                console.log(data)
+                alert("系统错误")
+            }
+        })
+    }
+
+
+    function checking() {
+        let userJson = $.cookie('user');
+        if (userJson == null) {
+            alert("请先登录");
+            location.href = "login.html";
+        }
+        user = JSON.parse(userJson)
+        console.log(user.nickname)
+        $('#username').html(user.nickname)
+        queryData.name = user.name
+        queryData.pwd = user.pwd
+        queryData.nickname = user.nickname
+    }
+
+    let count = -1;
+
+    function formatterStatus(value) {
+        let temp = "";
+        if (value === '') {
+            temp = "-";
+        } else {
+            temp = value;
+        }
+        const text = value;
+        const flag = text.length > 80;
+        if (flag) {
+            count = count + 1;
+            temp = "<p>" + text.substring(0, 80)
+                + "<span id='hide" + count + "' style='display:none'>" + text.substring(80) + "</span>"
+                + "<a href='javascript:;' id='open" + count + "' onclick='showhide(" + count + ")'>...Show more</a></p>"
+        }
+
+        return temp;
+    }
+
+    function showhide(count) {
+        if ($("#open" + count).text() === "...Show more") {
+            $("#open" + count).text("Pick up");
+            $("#hide" + count).show();
+        } else {
+            $("#open" + count).text("...Show more");
+            $("#hide" + count).hide();
+        }
+    }
 </script>
 </body>
 </html>

@@ -31,13 +31,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminVO login(AdminDTO adminDTO) {
 
-        Optional<Admin> adminOptional = adminRepository.findByNameAndPwd(adminDTO.getName(),adminDTO.getPwd());
+        Optional<Admin> adminOptional = adminRepository.findByNameAndPwd(adminDTO.getName(), adminDTO.getPwd());
         if (adminOptional.isEmpty()) {
-            throw new APIException(400,"用户名或密码不正确");
+            throw new APIException(400, "用户名或密码不正确");
         }
         Admin admin = adminOptional.get();
         AdminVO adminVO = new AdminVO();
-        BeanUtils.copyProperties(admin,adminVO);
+        BeanUtils.copyProperties(admin, adminVO);
         return adminVO;
     }
 
@@ -52,11 +52,23 @@ public class AdminServiceImpl implements AdminService {
         //评论
         Integer plCount = plService.findCount();
 
-        Map<String,Integer> map = new HashMap<>();
-        map.put("tieCount",tieCount);
-        map.put("userCount",userCount);
-        map.put("dzCount",dzCount);
-        map.put("plCount",plCount);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("tieCount", tieCount);
+        map.put("userCount", userCount);
+        map.put("dzCount", dzCount);
+        map.put("plCount", plCount);
         return map;
+    }
+
+    @Override
+    public void update(String name, String oldPwd, String pwd) {
+        Optional<Admin> adminOptional = adminRepository.findByNameAndPwd(name, oldPwd);
+        if (adminOptional.isPresent()) {
+            Admin admin = adminOptional.get();
+            admin.setPwd(pwd);
+            adminRepository.save(admin);
+        } else {
+            throw new APIException(400, "修改失败");
+        }
     }
 }

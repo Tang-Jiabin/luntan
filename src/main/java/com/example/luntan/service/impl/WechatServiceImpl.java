@@ -10,7 +10,6 @@ import com.example.luntan.util.OkHttpUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -29,7 +28,7 @@ public class WechatServiceImpl implements WechatService {
         //填写你小程序的appid 和 secret ,  还有前端传给你的code ,最后一个参数是固定的
         String tokenUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WechatConfig.APP_ID + "&secret=" + WechatConfig.SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         JSONObject accessToken = OkHttpUtil.get(tokenUrl);
-
+        log.info("accessToken:{}", accessToken.toJSONString());
         Integer resCode = accessToken.getInteger("code");
         UserDTO userDTO = new UserDTO();
         if (resCode.equals(200)) {

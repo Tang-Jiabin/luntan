@@ -9,4 +9,6 @@ public interface AdminService {
     AdminVO login(AdminDTO adminDTO);
 
     Map statistics(AdminDTO adminDTO);
+
+    void update(String name, String oldPwd, String pwd);
 }

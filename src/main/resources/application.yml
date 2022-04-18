@@ -23,6 +23,6 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
 wechat:
-  appid: wx3df1184a30ab95ed
-  secret: f307a802d3e5d3a10c62e3a933b81ade
+  appid: wx1d8e132225b904cb
+  secret: 9cf63c37f24ac87dfdfce0dd80239663
 file.dir: http://localhost:8080/upload/
