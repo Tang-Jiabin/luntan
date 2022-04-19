@@ -122,9 +122,11 @@ public class ForumServiceImpl implements ForumService {
         Optional<Forum> forumOptional = forumRepository.findById(id);
         scOptional.ifPresentOrElse(sc -> {
             scRepository.delete(sc);
-            forumOptional.ifPresent(forum -> {
+            forumOptional.ifPresentOrElse(forum -> {
                 forum.setScmun(forum.getScmun() - 1);
                 forumRepository.save(forum);
+            }, () -> {
+                throw new APIException(404, "帖子不存在");
             });
         }, () -> {
             Sc sc = new Sc();

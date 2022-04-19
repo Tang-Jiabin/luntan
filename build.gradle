@@ -39,5 +39,6 @@ dependencies {
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 	implementation 'com.alibaba:easyexcel:3.0.5'
+	implementation 'org.jsoup:jsoup:1.14.3'
 }
 
