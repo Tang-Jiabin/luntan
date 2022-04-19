@@ -37,6 +37,7 @@ public class GenericUserBasedRecommender implements Recommend {
             }
         }
         recommendFidSet.removeAll(userFidSet);
+//        return recommendFidSet.stream().skip((long) (page - 1) * limit).limit(limit).collect(Collectors.toList());
         return new ArrayList<>(recommendFidSet);
     }
 }
