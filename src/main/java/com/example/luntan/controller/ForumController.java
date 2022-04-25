@@ -13,7 +13,6 @@ import com.example.luntan.service.ForumService;
 import com.example.luntan.service.PlService;
 import com.example.luntan.service.UserService;
 import com.example.luntan.vo.*;
-
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +94,8 @@ public class ForumController {
     @PostMapping(value = "/dz")
     public RestResponse<Object> dz(@RequestBody ItemIdVO itemIdVO) {
         forumService.dz(itemIdVO.getUid(), itemIdVO.getId());
-        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.DZ);
+        dataModelService.add(itemIdVO.getUid(), itemIdVO.getId(), DataModelTypeEnum.DZ);
+        forumService.updateScore(itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -104,6 +104,7 @@ public class ForumController {
     @PostMapping(value = "/dzdel")
     public RestResponse<Object> dzdel(@RequestBody ItemIdVO itemIdVO) {
         forumService.dz(itemIdVO.getUid(), itemIdVO.getId());
+        forumService.updateScore(itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -112,7 +113,8 @@ public class ForumController {
     @PostMapping(value = "/sc")
     public RestResponse<Object> sc(@RequestBody ItemIdVO itemIdVO) {
         forumService.sc(itemIdVO.getUid(), itemIdVO.getId());
-        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.SC);
+        dataModelService.add(itemIdVO.getUid(), itemIdVO.getId(), DataModelTypeEnum.SC);
+        forumService.updateScore(itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -121,6 +123,7 @@ public class ForumController {
     @PostMapping(value = "/scdel")
     public RestResponse<Object> scdel(@RequestBody ItemIdVO itemIdVO) {
         forumService.sc(itemIdVO.getUid(), itemIdVO.getId());
+        forumService.updateScore(itemIdVO.getId());
         return RestResponse.success();
     }
 
@@ -132,7 +135,7 @@ public class ForumController {
         UserDTO userDTO = userService.findById(forumDTO.getUid());
         ForumVO forumVO = forumService.dto2vo(forumDTO, userDTO, itemIdVO.getUid());
         forumService.addJl(itemIdVO);
-        dataModelService.add(itemIdVO.getUid(),itemIdVO.getId(), DataModelTypeEnum.CK);
+        dataModelService.add(itemIdVO.getUid(), itemIdVO.getId(), DataModelTypeEnum.CK);
         return RestResponse.success(forumVO);
     }
 
@@ -157,7 +160,8 @@ public class ForumController {
             return RestResponse.error(411, "请输入评论内容");
         }
         plService.add(plAddVO);
-        dataModelService.add(plAddVO.getUid(),plAddVO.getId(), DataModelTypeEnum.PL);
+        dataModelService.add(plAddVO.getUid(), plAddVO.getId(), DataModelTypeEnum.PL);
+        forumService.updateScore(plAddVO.getId());
         return RestResponse.success();
     }
 
@@ -179,6 +183,39 @@ public class ForumController {
         ForumDTO forumDTO = new ForumDTO();
         BeanUtils.copyProperties(forumVO, forumDTO);
         forumService.add(forumDTO);
+        return RestResponse.success();
+    }
+
+    @ApiOperation("取消收藏")
+    @ApiImplicitParam(name = "ItemIdDTO", value = "取消收藏", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
+    @PostMapping(value = "/sc/del")
+    public RestResponse<Object> myscdel(@RequestBody ItemIdVO itemIdVO) {
+        forumService.sc(itemIdVO.getUid(), itemIdVO.getId());
+        forumService.updateScore(itemIdVO.getId());
+        return RestResponse.success();
+    }
+
+    @ApiOperation("删除记录")
+    @ApiImplicitParam(name = "ItemIdDTO", value = "删除记录", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
+    @PostMapping(value = "/jl/del")
+    public RestResponse<Object> myjldel(@RequestBody ItemIdVO itemIdVO) {
+        forumService.deljl(itemIdVO.getId(), itemIdVO.getUid());
+        return RestResponse.success();
+    }
+
+    @ApiOperation("删除帖子")
+    @ApiImplicitParam(name = "ItemIdDTO", value = "删除帖子", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
+    @PostMapping(value = "/del")
+    public RestResponse<Object> mytiedel(@RequestBody ItemIdVO itemIdVO) {
+        forumService.del(itemIdVO.getId());
+        return RestResponse.success();
+    }
+
+    @ApiOperation("删除评论")
+    @ApiImplicitParam(name = "ItemIdDTO", value = "删除评论", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")
+    @PostMapping(value = "/pl/del")
+    public RestResponse<Object> mypldel(@RequestBody ItemIdVO itemIdVO) {
+        plService.del(itemIdVO.getId(), itemIdVO.getUid());
         return RestResponse.success();
     }
 

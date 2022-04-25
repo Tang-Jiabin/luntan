@@ -8,4 +8,5 @@ public class PlQueryVO {
     private Integer limit;
     private Integer fid;
     private Integer loginId;
+    private Integer uid;
 }

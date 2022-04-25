@@ -21,4 +21,5 @@ public interface PlService {
 
     Integer findCount();
 
+    void del(Integer id, Integer uid);
 }

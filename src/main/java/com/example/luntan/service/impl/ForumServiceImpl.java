@@ -46,6 +46,10 @@ public class ForumServiceImpl implements ForumService {
         Forum forum = new Forum();
         BeanUtils.copyProperties(forumDTO, forum);
         forum.setCtime(Instant.now());
+        forum.setScore(0d);
+        forum.setDzmun(0);
+        forum.setScmun(0);
+        forum.setPlmun(0);
         forumRepository.save(forum);
     }
 
@@ -53,6 +57,7 @@ public class ForumServiceImpl implements ForumService {
     public Page<Forum> findPage(ForumQueryVO forumQueryVO) {
 
         int page = forumQueryVO.getPage() <= 1 ? 0 : forumQueryVO.getPage() - 1;
+        int limit = forumQueryVO.getLimit();
         Pageable pageable = null;
 
         switch (forumQueryVO.getLx() == null || forumQueryVO.getLx() == 0 ? 1 : forumQueryVO.getLx()) {
@@ -75,13 +80,13 @@ public class ForumServiceImpl implements ForumService {
                 pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "ctime");
                 break;
             case 3:
-                //排行 按照点赞数量排序
+                //排行 score=log5z+t/86400
                 forumQueryVO.setLx(null);
-                pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "dzmun");
+                pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "score");
                 break;
             default:
                 //分类 按照更新时间排序
-                pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "utime");
+                pageable = PageRequest.of(page, forumQueryVO.getLimit(), Sort.Direction.DESC, "ctime");
                 break;
         }
 
@@ -250,6 +255,25 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public void del(Integer id) {
         forumRepository.deleteById(id);
+    }
+
+    @Async
+    @Override
+    public void updateScore(Integer id) {
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        forumOptional.ifPresent(forum -> {
+//            long epochSecond = LocalDateTime.of(2022, 4, 1, 0, 0, 0).toEpochSecond(ZoneOffset.of("+08:00"));
+            long epochSecond = 1648742400;
+            double score = Math.log(forum.getDzmun() + forum.getPlmun() + forum.getScmun()) / Math.log(5) + forum.getCtimeEpochSecond() - epochSecond / 86400d;
+            forum.setScore(score);
+            forumRepository.save(forum);
+        });
+    }
+
+    @Override
+    public void deljl(Integer id, Integer uid) {
+        Optional<Jl> jlOptional = jlRepository.findByFidAndUid(id, uid);
+        jlOptional.ifPresent(jlRepository::delete);
     }
 
     private void addScInfo(ForumVO forumVO, Integer loginId) {

@@ -6,8 +6,8 @@ import com.example.luntan.pojo.DataModel;
 import com.example.luntan.service.Similarity;
 import lombok.extern.slf4j.Slf4j;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class PearsonCorrelationSimilarity implements Similarity {
@@ -40,9 +40,9 @@ public class PearsonCorrelationSimilarity implements Similarity {
             if (!mode.getId().equals(id)) {
                 double distance = pearsonDis(mode.getModeList(), recommendMode.getModeList());
                 disList.add(new Distances(mode.getId(), distance));
-                log.info("基类：{}", recommendMode);
-                log.info("对比：{}", mode);
-                log.info("距离：{}", distance);
+//                log.info("基类：{}", recommendMode);
+//                log.info("对比：{}", mode);
+//                log.info("距离：{}", distance);
             }
         }
         return disList;

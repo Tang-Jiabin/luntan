@@ -39,4 +39,8 @@ public interface ForumService {
     Integer findCount();
 
     void del(Integer id);
+
+    void updateScore(Integer id);
+
+    void deljl(Integer id, Integer uid);
 }

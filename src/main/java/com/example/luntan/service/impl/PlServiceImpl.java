@@ -1,7 +1,9 @@
 package com.example.luntan.service.impl;
 
+import com.example.luntan.dao.ForumRepository;
 import com.example.luntan.dao.PlRepository;
 import com.example.luntan.dto.UserDTO;
+import com.example.luntan.pojo.Forum;
 import com.example.luntan.pojo.Pl;
 import com.example.luntan.service.PlService;
 import com.example.luntan.vo.PageVO;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class PlServiceImpl implements PlService {
 
     private final PlRepository plRepository;
+    private final ForumRepository forumRepository;
 
 
     @Override
@@ -44,17 +47,26 @@ public class PlServiceImpl implements PlService {
         pl.setContent(plAddVO.getContent());
         pl.setCtime(Instant.now());
         plRepository.save(pl);
-
+        Optional<Forum> forumOptional = forumRepository.findById(plAddVO.getId());
+        forumOptional.ifPresent(forum -> {
+            forum.setPlmun(forum.getPlmun() + 1);
+            forumRepository.save(forum);
+        });
     }
 
     @Override
     public Page<Pl> findPage(PlQueryVO plQueryVO) {
-        int page = plQueryVO.getPage()==null||plQueryVO.getPage() <= 1 ? 0 : plQueryVO.getPage() - 1;
+        int page = plQueryVO.getPage() == null || plQueryVO.getPage() <= 1 ? 0 : plQueryVO.getPage() - 1;
         Pageable pageable = PageRequest.of(page, plQueryVO.getLimit(), Sort.Direction.ASC, "storey");
         return plRepository.findAll((root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
+            if (plQueryVO.getFid() != null) {
+                list.add(criteriaBuilder.equal(root.get("fid").as(Integer.class), plQueryVO.getFid()));
+            }
+            if (plQueryVO.getUid() != null) {
 
-            list.add(criteriaBuilder.equal(root.get("fid").as(Integer.class), plQueryVO.getFid()));
+                list.add(criteriaBuilder.equal(root.get("uid").as(Integer.class), plQueryVO.getUid()));
+            }
 
             Predicate[] p = new Predicate[list.size()];
             return criteriaBuilder.and(list.toArray(p));
@@ -87,6 +99,12 @@ public class PlServiceImpl implements PlService {
     @Override
     public Integer findCount() {
         return plRepository.findCount();
+    }
+
+    @Override
+    public void del(Integer id, Integer uid) {
+        Optional<Pl> plOptional = plRepository.findById(id);
+        plOptional.ifPresent(plRepository::delete);
     }
 
     private List<PlVO> poList2vo(List<Pl> plList) {
