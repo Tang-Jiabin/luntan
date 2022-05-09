@@ -74,6 +74,20 @@ public class AdminController {
         return RestResponse.success(pageVO);
     }
 
+    @ApiOperation("举报列表")
+    @ApiImplicitParam(name = "AdminDTO", value = "举报列表", required = true, dataTypeClass = AdminDTO.class, paramType = "body")
+    @PostMapping(value = "/tie/report")
+    public RestResponse<PageVO<ReportVO>> tieReport(@RequestBody AdminForumVO adminForumVO) {
+        AdminDTO adminDTO = new AdminDTO();
+        BeanUtils.copyProperties(adminForumVO,adminDTO);
+        AdminVO adminVO = adminService.login(adminDTO);
+        ForumQueryVO forumQueryVO = new ForumQueryVO();
+        BeanUtils.copyProperties(adminForumVO,forumQueryVO);
+        PageVO<ReportVO> pageVO = forumService.findReportPage(forumQueryVO);
+
+        return RestResponse.success(pageVO);
+    }
+
     @ApiOperation("标签列表")
     @ApiImplicitParam(name = "AdminDTO", value = "标签列表", required = true, dataTypeClass = AdminDTO.class, paramType = "body")
     @PostMapping(value = "/label/List")
@@ -142,6 +156,14 @@ public class AdminController {
     @PostMapping(value = "/tie/del")
     public RestResponse<Object> tieDel(@RequestBody AdminDTO adminDTO) {
         forumService.del(adminDTO.getId());
+        return RestResponse.success();
+    }
+
+    @ApiOperation("禁言")
+    @ApiImplicitParam(name = "AdminDTO", value = "禁言", required = true, dataTypeClass = AdminDTO.class, paramType = "body")
+    @PostMapping(value = "/tie/ban")
+    public RestResponse<Object> tieBan(@RequestBody AdminDTO adminDTO) {
+        forumService.ban(adminDTO.getId());
         return RestResponse.success();
     }
 }

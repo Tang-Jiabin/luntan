@@ -1,10 +1,13 @@
 package com.example.luntan.service.impl;
 
+import com.example.luntan.common.APIException;
 import com.example.luntan.dao.ForumRepository;
 import com.example.luntan.dao.PlRepository;
+import com.example.luntan.dao.UserRepository;
 import com.example.luntan.dto.UserDTO;
 import com.example.luntan.pojo.Forum;
 import com.example.luntan.pojo.Pl;
+import com.example.luntan.pojo.User;
 import com.example.luntan.service.PlService;
 import com.example.luntan.vo.PageVO;
 import com.example.luntan.vo.PlAddVO;
@@ -29,11 +32,18 @@ import java.util.Optional;
 public class PlServiceImpl implements PlService {
 
     private final PlRepository plRepository;
+    private final UserRepository userRepository;
     private final ForumRepository forumRepository;
 
 
     @Override
     public void add(PlAddVO plAddVO) {
+        Optional<User> userOptional = userRepository.findById(plAddVO.getUid());
+        userOptional.ifPresent(user -> {
+            if (user.getState()!=1) {
+                throw new APIException(411,"已被禁言");
+            }
+        });
         Optional<Pl> plOptional = plRepository.findFirstByFidAndPidOrderByStoreyDesc(plAddVO.getId(), plAddVO.getPid());
         int storey = 1;
         if (plOptional.isPresent()) {

@@ -9,24 +9,18 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
-@Table(name = "luntan_user")
-public class User {
+@Table(name = "luntan_report")
+public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String openid;
+    private Integer fid;
 
-    private String sessionKey;
+    private Integer uid;
 
-    private String name;
-
-    private String sign;
-
-    private String logo;
-
-    private Integer sex;
+    private String content;
 
     private Instant ctime;
 
@@ -34,13 +28,9 @@ public class User {
 
     public String getCtime() {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
-        if (this.ctime != null) {
-            return dateFormat.format(this.ctime);
+        if (this.ctime==null){
+            ctime = Instant.now();
         }
-        return "";
-    }
-
-    public String getSex() {
-        return this.sex == null || this.sex == 0 ? "男" : "女";
+        return dateFormat.format(this.ctime);
     }
 }

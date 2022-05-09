@@ -43,4 +43,10 @@ public interface ForumService {
     void updateScore(Integer id);
 
     void deljl(Integer id, Integer uid);
+
+    void report(PlAddVO plAddVO);
+
+    PageVO<ReportVO> findReportPage(ForumQueryVO forumQueryVO);
+
+    void ban(Integer id);
 }

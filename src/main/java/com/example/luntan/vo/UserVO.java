@@ -18,4 +18,5 @@ public class UserVO {
     private String sex;
 
     private String telephone;
+    private Integer state;
 }

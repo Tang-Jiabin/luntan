@@ -165,6 +165,17 @@ public class ForumController {
         return RestResponse.success();
     }
 
+    @ApiOperation("举报")
+    @ApiImplicitParam(name = "PlAddDTO", value = "举报", required = true, dataTypeClass = PlAddVO.class, paramType = "body")
+    @PostMapping(value = "/report")
+    public RestResponse<Object> report(@RequestBody PlAddVO plAddVO) {
+        if (!StringUtils.hasText(plAddVO.getContent())) {
+            return RestResponse.error(411, "请输入举报内容");
+        }
+        forumService.report(plAddVO);
+        return RestResponse.success();
+    }
+
 
     @ApiOperation("用户数据")
     @ApiImplicitParam(name = "ItemIdDTO", value = "用户数据", required = true, dataTypeClass = ItemIdVO.class, paramType = "body")

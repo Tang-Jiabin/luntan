@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -37,12 +38,20 @@ public class ForumServiceImpl implements ForumService {
     private final ScRepository scRepository;
     private final PlRepository plRepository;
     private final JlRepository jlRepository;
+    private final UserRepository userRepository;
     private final ForumRepository forumRepository;
+    private final ReportRepository reportRepository;
     private final DataModelRepository dataModelRepository;
 
 
     @Override
     public void add(ForumDTO forumDTO) {
+        Optional<User> userOptional = userRepository.findById(forumDTO.getUid());
+        userOptional.ifPresent(user -> {
+            if (user.getState()!=1) {
+                throw new APIException(411,"已被禁言");
+            }
+        });
         Forum forum = new Forum();
         BeanUtils.copyProperties(forumDTO, forum);
         forum.setCtime(Instant.now());
@@ -254,6 +263,13 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public void del(Integer id) {
+        List<Report> reportList = reportRepository.findAllByFid(id);
+        for (Report report : reportList) {
+
+            report.setState(2);
+            reportRepository.save(report);
+
+        }
         forumRepository.deleteById(id);
     }
 
@@ -274,6 +290,77 @@ public class ForumServiceImpl implements ForumService {
     public void deljl(Integer id, Integer uid) {
         Optional<Jl> jlOptional = jlRepository.findByFidAndUid(id, uid);
         jlOptional.ifPresent(jlRepository::delete);
+    }
+
+    @Override
+    public void report(PlAddVO plAddVO) {
+        Report report = new Report();
+        report.setFid(plAddVO.getId());
+        report.setUid(plAddVO.getUid());
+        report.setContent(plAddVO.getContent());
+        report.setCtime(Instant.now());
+        report.setState(1);
+        reportRepository.save(report);
+    }
+
+    @Override
+    public PageVO<ReportVO> findReportPage(ForumQueryVO forumQueryVO) {
+        int page = forumQueryVO.getPage() <= 1 ? 0 : forumQueryVO.getPage() - 1;
+        int limit = forumQueryVO.getLimit();
+        Pageable pageable = PageRequest.of(page, limit, Sort.Direction.DESC, "ctime");
+        Page<Report> reportPage = reportRepository.findAll((root, query, criteriaBuilder) -> {
+            List<Predicate> list = new ArrayList<>();
+            Predicate[] p = new Predicate[list.size()];
+            return criteriaBuilder.and(list.toArray(p));
+        }, pageable);
+        PageVO<ReportVO> pageVO = new PageVO<>();
+        BeanUtils.copyProperties(reportPage, pageVO);
+        List<Report> content = reportPage.getContent();
+
+        List<Forum> forumList = forumRepository.findAllById(content.stream().map(Report::getFid).collect(Collectors.toList()));
+        List<User> userList = userRepository.findAllById(content.stream().map(Report::getUid).collect(Collectors.toList()));
+        List<ReportVO> reportVOList = new ArrayList<>();
+        ReportVO reportVO;
+        for (Report report : content) {
+            reportVO = new ReportVO();
+            BeanUtils.copyProperties(report, reportVO);
+            for (Forum forum : forumList) {
+                if (report.getFid().equals(forum.getId())) {
+                    reportVO.setForumContent(forum.getContent());
+                    break;
+                }
+            }
+            for (User user : userList) {
+                if (report.getUid().equals(user.getId())) {
+                    reportVO.setNickname(user.getName());
+                    break;
+                }
+            }
+            reportVOList.add(reportVO);
+        }
+        pageVO.setContent(reportVOList);
+        return pageVO;
+    }
+
+    @Override
+    public void ban(Integer id) {
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        forumOptional.ifPresent(forum -> {
+            Optional<User> userOptional = userRepository.findById(forum.getUid());
+            userOptional.ifPresent(user -> {
+                user.setState(2);
+                userRepository.save(user);
+            });
+            List<Report> reportList = reportRepository.findAllByFid(forum.getId());
+            for (Report report : reportList) {
+                if (report.getUid().equals(forum.getUid())) {
+                    report.setState(2);
+                    reportRepository.save(report);
+                }
+            }
+        });
+
+
     }
 
     private void addScInfo(ForumVO forumVO, Integer loginId) {
